@@ -1,32 +1,42 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreMessageRequest;
 use App\Http\Resources\MessageResource;
 use App\Models\Message;
-use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
-class MessageController extends Controller
+class DashboardController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $user = Auth::user() ?? User::find(1);
-        return MessageResource::collection($user->getMessages());
+        return view('dashboard',
+            ['messages' => MessageResource::collection(Auth::user()->getMessages())]
+        );
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreMessageRequest $request): MessageResource
+    public function store(StoreMessageRequest $request)
     {
-        return new MessageResource(Message::create([$request->validated()]));
+         new MessageResource(Message::create($request->validated()));
+
+         return back();
     }
 
     /**
@@ -34,7 +44,15 @@ class MessageController extends Controller
      */
     public function show(Message $message)
     {
-        return new MessageResource($message);
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Message $message)
+    {
+        //
     }
 
     /**

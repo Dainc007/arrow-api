@@ -3,10 +3,12 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Http\Resources\MessageResource;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -56,5 +58,11 @@ class User extends Authenticatable
         return $this->hasMany(Message::class, 'to');
     }
 
+
+    public function getMessages() : Collection
+    {
+        $user = Auth::user() ?? User::find(1);
+        return MessageResource::collection($user->sendMessages)->merge(MessageResource::collection($user->recivedMessages));
+    }
 
 }

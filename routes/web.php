@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Events\NewMessageRecived;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +19,19 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
+
+//    if(!Auth()->user()) {
+//        return view('auth.login');
+//    }
+//
+//    return view('dashboard', [
+//        'canLogin' => Route::has('login'),
+//        'canRegister' => Route::has('register'),
+//        'laravelVersion' => Application::VERSION,
+//        'phpVersion' => PHP_VERSION,
+//        'messages' => Auth()->user()->getMessages()
+//    ]);
+
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
@@ -27,7 +42,9 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth'])->name('dashboard');
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
